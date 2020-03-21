@@ -99,12 +99,20 @@ if __name__ == '__main__':
 
     for epoch in range(1, C.EPOCHS + 1):
         if C.RESTORE_MODEL:
+            print("模型开始增量训练==>>")
+            model = torch.load(C.MODEL_SAVE_PATH)
             mytrain(model, device, train_loader, optimizer, epoch)
             mytest(model, device, test_loader,epoch)
             scheduler.step()
 
-        if C.SAVE_MODEL:
-            torch.save(model.state_dict(), "./model_save/Mydemp.pt")
+        else:
+            mytrain(model, device, train_loader, optimizer, epoch)
+            mytest(model, device, test_loader, epoch)
+            scheduler.step()
+
+
+    if C.SAVE_MODEL:
+        torch.save(model, C.MODEL_SAVE_PATH)
 
 
 ## 参考了：https://github.com/pytorch/examples/blob/master/mnist/main.py
