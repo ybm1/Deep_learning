@@ -103,12 +103,19 @@ if __name__ == '__main__':
     model = model.cuda(device_ids[0])
 
 
-    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    #print("device===>",device)
+    print("device===>",device)
+    print("device counts===>", torch.cuda.device_count())
+    model = Net()
+    if torch.cuda.device_count() > 1:
+        model = torch.nn.DataParallel(model,device_ids = [0, 1, 2])
+
+        #model = torch.nn.DataParallel(model, device_ids=device_ids)
+    model = model.to(device)
 
     optimizer = optim.Adadelta(model.parameters(), lr=C.LEARNING_RATE)
-    optimizer = torch.nn.DataParallel(optimizer, device_ids=device_ids)\
+    #optimizer = torch.nn.DataParallel(optimizer, device_ids=device_ids)
 
     scheduler = StepLR(optimizer, step_size=2, gamma=C.gamma)
 
