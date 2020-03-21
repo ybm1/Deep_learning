@@ -5,7 +5,7 @@ BATCH_SIZE = 36
 
 LEARNING_RATE = 10**(-3)
 
-EPOCHS = 3
+EPOCHS = 30
 
 LOG_INTERVAL = 3
 
@@ -15,6 +15,8 @@ gamma = 0.1
 
 RESTORE_MODEL = True
 
+
+PATH_to_log_dir = "./logs"
 ## 输入相关
 TRAIN_DATA_SIZE = 1000
 

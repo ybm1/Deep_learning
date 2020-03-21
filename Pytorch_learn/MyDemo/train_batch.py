@@ -8,6 +8,15 @@ from multi_input_data import get_data,Mydataset
 from torch.utils.data import DataLoader
 import Const as C
 
+from torch.utils.tensorboard import SummaryWriter
+writer = SummaryWriter(C.PATH_to_log_dir)
+
+## 使用
+# tensorboard --logdir=/Users/biqixuan/PycharmProjects/Deep_learning/Pytorch_learn/MyDemo/logs
+
+# 进行tensorboard的查看
+
+
 def mytrain(model, device, train_loader, optimizer, epoch):
     model.train()
     for batch_idx, sample_batched in enumerate(train_loader):
@@ -23,8 +32,20 @@ def mytrain(model, device, train_loader, optimizer, epoch):
         output = model(p1,p2,p3)
 
         loss = F.mse_loss(output, target)
+
         loss.backward()
+
         optimizer.step()
+        bias = F.l1_loss(output, target)
+
+        writer.add_scalar('training MSE',
+                          loss.item(),
+                          epoch * len(train_loader) + batch_idx)
+        writer.add_scalar('training l1 loss',
+                          bias.item(),
+                          epoch * len(train_loader) + batch_idx)
+
+
         if batch_idx % C.LOG_INTERVAL == 0:
             print('Train Epoch: {} Batch_idx :{} \tLoss: {:.6f}'.format(
                 epoch, batch_idx , loss.item()))
@@ -50,6 +71,8 @@ def mytest(model, device, test_loader,epoch):
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
+    writer.add_scalar('Epoch test MSE',
+                      test_loss,epoch)
 
     print('\nTest set:Epoch: {}  Average MSE loss: {:.4f}'.format(epoch,test_loss))
 
