@@ -11,6 +11,9 @@ import Const as C
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter(C.PATH_to_log_dir)
 
+
+## 本代码可以对cpu或者单个gpu进行使用
+
 ## 使用
 # tensorboard --logdir=/Users/biqixuan/PycharmProjects/Deep_learning/Pytorch_learn/MyDemo/logs
 
@@ -26,7 +29,9 @@ def mytrain(model, device, train_loader, optimizer, epoch):
 
         target = sample_batched["label"]
 
-        p1,p2,p3,target = p1.to(device),p2.to(device),p3.to(device),target.to(device)
+        p1,p2,p3,target = p1.to(device,dtype = torch.float32),\
+                          p2.to(device,dtype = torch.float32),\
+                          p3.to(device,dtype = torch.float32),target.to(device)
 
         optimizer.zero_grad()
         output = model(p1,p2,p3)
