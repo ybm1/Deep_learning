@@ -3,7 +3,7 @@ My DL study.
 
 Tf和Pytorch的学习代码整理.
 
-分别用Tf和Pytorch实现了一个Demo，该Demo支持下面的功能：
+分别用Pytorch和Tf实现了一个Demo，该Demo支持下面的功能：
 
 * 数据输入，模型定义，训练的模块化
 * 数据支持多输入的情况，这里的每一个样本的特征包括三部分，
@@ -11,3 +11,7 @@ Tf和Pytorch的学习代码整理.
 * 支持单机多卡训练
 * 支持模型的保存和增量训练
 * 支持tensorboard
+
+目前已经用Pytorch写完，完整的项目代码在MyDemo中。
+
+Tf的正在进行。
