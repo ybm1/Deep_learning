@@ -12,6 +12,6 @@ Tf和Pytorch的学习代码整理.
 * 支持模型的保存和增量训练
 * 支持tensorboard
 
-目前已经用Pytorch写完，完整的项目代码在MyDemo中。
+目前已经用Pytorch写完，完整的项目代码在Pytorch_learn/MyDemo中。
 
 Tf的正在进行。
