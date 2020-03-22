@@ -57,14 +57,14 @@ class Net(nn.Module):
 
 
         p3 = self.fc_p3(p3)
-        p3 = F.sigmoid(p3)
+        p3 = torch.sigmoid(p3)
 
         #print("model===>",p1.size(),p2.size(),p3.size())
 
         p_all = torch.cat((p1,p2,p3),1)
 
         output = self.fc_all(p_all)
-        output = F.sigmoid(output)
+        output = torch.sigmoid(output)
         #print("output size===>", output.size())
 
         return output

@@ -49,9 +49,9 @@ def mytrain(model, device, train_loader, optimizer, epoch):
                           epoch * len(train_loader) + batch_idx)
 
         if batch_idx % C.LOG_INTERVAL == 0:
-            print('Train Epoch: {} Batch_idx :{} \tMSE Loss: {:.8f}'.format(
+            print('Train Epoch: {} Batch_idx :{} \t Batch MSE Loss: {:.8f}'.format(
                 epoch, batch_idx, loss.item()))
-            print('Train Epoch: {} Batch_idx :{} \tBias Loss: {:.8f}'.format(
+            print('Train Epoch: {} Batch_idx :{} \tBatch Bias Loss: {:.8f}'.format(
                 epoch, batch_idx, bias.item()))
 
     return model
