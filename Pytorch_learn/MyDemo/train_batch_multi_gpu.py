@@ -17,7 +17,7 @@ writer = SummaryWriter(C.PATH_to_log_dir)
 # 进行tensorboard的查看
 
 
-def mytrain(model, train_loader, optimizer, epoch):
+def mytrain(model,device, train_loader, optimizer, epoch):
     model.train()
     for batch_idx, sample_batched in enumerate(train_loader):
         p1 = sample_batched["features"]["p1"]
@@ -27,6 +27,7 @@ def mytrain(model, train_loader, optimizer, epoch):
         target = sample_batched["label"]
 
         #p1,p2,p3,target = p1.to(device),p2.to(device),p3.to(device),target.to(device)
+        ## gpu时可以直接.cuda() 把数据放在GPU上
         p1, p2, p3, target = p1.cuda(), p2.cuda(), p3.cuda(), target.cuda()
 
         optimizer.zero_grad()
@@ -52,7 +53,7 @@ def mytrain(model, train_loader, optimizer, epoch):
                 epoch, batch_idx , loss.item()))
 
 
-def mytest(model, test_loader,epoch):
+def mytest(model,device, test_loader,epoch):
     model.eval()
     test_loss = 0
     correct = 0
@@ -65,6 +66,8 @@ def mytest(model, test_loader,epoch):
             target = data["label"]
 
             #p1, p2, p3, target = p1.to(device), p2.to(device), p3.to(device), target.to(device)
+            ## gpu时可以直接.cuda() 把数据放在GPU上
+
             p1, p2, p3, target = p1.cuda(), p2.cuda(), p3.cuda(), target.cuda()
 
             output = model(p1,p2,p3)
@@ -97,25 +100,24 @@ if __name__ == '__main__':
                              batch_size=C.BATCH_SIZE,
                              shuffle=True, num_workers=2)
 
-    device_ids = [0, 1, 2, 3]
-    model = Net()
-    model = torch.nn.DataParallel(model, device_ids=device_ids)
-    model = model.cuda(device_ids[0])
-
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
     print("device===>",device)
     print("device counts===>", torch.cuda.device_count())
     model = Net()
-    if torch.cuda.device_count() > 1:
-        model = torch.nn.DataParallel(model,device_ids = [0, 1, 2])
+    #if torch.cuda.device_count() > 1:
+    device_ids = [0, 1, 2, 3]
+    model = torch.nn.DataParallel(model,device_ids = device_ids).cuda()
 
-        #model = torch.nn.DataParallel(model, device_ids=device_ids)
-    model = model.to(device)
+    # 经过在colab上的测试，只需要上面这一行就可以，通过device_ids的不同，来指定是单个GPU
+    # 还是多个GPU，即使是单个GPU也可以直接跑(colab测试可以成功)，多GPU还没测，不过问题不大
+
+    # model = model.module  # 有博客说多gpu时要加上这行，见下面
+    # 看https://blog.csdn.net/daydayjump/article/details/81158777
+    #model = model.to(device)  这行和model.cuda()效果应该一样
 
     optimizer = optim.Adadelta(model.parameters(), lr=C.LEARNING_RATE)
-    #optimizer = torch.nn.DataParallel(optimizer, device_ids=device_ids)
+
 
     scheduler = StepLR(optimizer, step_size=2, gamma=C.gamma)
 
@@ -123,12 +125,14 @@ if __name__ == '__main__':
         if C.RESTORE_MODEL:
             print("模型开始增量训练==>>")
             model = torch.load(C.MODEL_SAVE_PATH)
-            mytrain(model,  train_loader, optimizer, epoch)
-            mytest(model, test_loader,epoch)
+            mytrain(model, device, train_loader, optimizer, epoch)
+            print(model.parameters())
+            mytest(model, device,test_loader,epoch)
             scheduler.step()
 
         else:
             mytrain(model,  train_loader, optimizer, epoch)
+            print(model.parameters())
             mytest(model, test_loader, epoch)
             scheduler.step()
 
