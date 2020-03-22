@@ -52,7 +52,7 @@ def mytrain(model, train_loader, optimizer, epoch):
         if batch_idx % C.LOG_INTERVAL == 0:
             print('Train Epoch: {} Batch_idx :{} \tLoss: {:.6f}'.format(
                 epoch, batch_idx , loss.item()))
-    return model
+
 
 
 def mytest(model, test_loader,epoch):
@@ -125,21 +125,20 @@ if __name__ == '__main__':
     for epoch in range(1, C.EPOCHS + 1):
         if C.RESTORE_MODEL:
             print("模型开始增量训练==>>")
-            model = torch.load(C.MODEL_SAVE_PATH)
+            model = torch.load(C.REGTRSSION_MODEL_SAVE_PATH)
             mytrain(model, train_loader, optimizer, epoch)
-            model = mytrain(model, train_loader, optimizer, epoch)
+
             mytest(model, test_loader,epoch)
             scheduler.step()
 
         else:
             mytrain(model,  train_loader, optimizer, epoch)
-            model = mytrain(model, train_loader, optimizer, epoch)
             mytest(model, test_loader, epoch)
             scheduler.step()
 
 
     if C.SAVE_MODEL:
-        torch.save(model, C.MODEL_SAVE_PATH)
+        torch.save(model, C.REGTRSSION_MODEL_SAVE_PATH)
 
 
 ## 参考了：https://github.com/pytorch/examples/blob/master/mnist/main.py
