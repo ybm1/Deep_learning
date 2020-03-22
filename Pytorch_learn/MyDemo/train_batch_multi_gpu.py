@@ -17,7 +17,7 @@ writer = SummaryWriter(C.PATH_to_log_dir)
 # 进行tensorboard的查看
 
 
-def mytrain(model,device, train_loader, optimizer, epoch):
+def mytrain(model, train_loader, optimizer, epoch):
     model.train()
     for batch_idx, sample_batched in enumerate(train_loader):
         p1 = sample_batched["features"]["p1"]
@@ -55,10 +55,9 @@ def mytrain(model,device, train_loader, optimizer, epoch):
     return model
 
 
-def mytest(model,device, test_loader,epoch):
+def mytest(model, test_loader,epoch):
     model.eval()
     test_loss = 0
-    correct = 0
     with torch.no_grad():
         for data in test_loader:
             p1 = data["features"]["p1"]
@@ -74,8 +73,7 @@ def mytest(model,device, test_loader,epoch):
 
             output = model(p1,p2,p3)
             test_loss += F.mse_loss(input = output, target = target, reduction='sum').item()  # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-            correct += pred.eq(target.view_as(pred)).sum().item()
+
 
     test_loss /= len(test_loader.dataset)
     writer.add_scalar('Epoch test MSE',
@@ -115,7 +113,8 @@ if __name__ == '__main__':
     # 还是多个GPU，即使是单个GPU也可以直接跑(colab测试可以成功)，多GPU还没测，不过问题不大
 
     # model = model.module  # 有博客说多gpu时要加上这行，见下面
-    # 看https://blog.csdn.net/daydayjump/article/details/81158777
+    # https://blog.csdn.net/daydayjump/article/details/81158777
+
     #model = model.to(device)  这行和model.cuda()效果应该一样
 
     optimizer = optim.Adadelta(model.parameters(), lr=C.LEARNING_RATE)
@@ -127,9 +126,9 @@ if __name__ == '__main__':
         if C.RESTORE_MODEL:
             print("模型开始增量训练==>>")
             model = torch.load(C.MODEL_SAVE_PATH)
-            mytrain(model, device, train_loader, optimizer, epoch)
+            mytrain(model, train_loader, optimizer, epoch)
             model = mytrain(model, train_loader, optimizer, epoch)
-            mytest(model, device,test_loader,epoch)
+            mytest(model, test_loader,epoch)
             scheduler.step()
 
         else:
