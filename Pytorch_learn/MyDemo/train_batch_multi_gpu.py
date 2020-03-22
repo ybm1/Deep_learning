@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
     #model = model.to(device)  这行和model.cuda()效果应该一样
 
-    optimizer = optim.Adadelta(model.parameters(), lr=C.LEARNING_RATE)
+    optimizer = optim.Adam(model.parameters(), lr=C.LEARNING_RATE)
 
 
     scheduler = StepLR(optimizer, step_size=2, gamma=C.gamma)
