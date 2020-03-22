@@ -35,6 +35,7 @@ def mytrain(model,device, train_loader, optimizer, epoch):
 
         loss = F.mse_loss(output, target)
 
+
         loss.backward()
 
         optimizer.step()

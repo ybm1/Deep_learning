@@ -5,7 +5,7 @@ BATCH_SIZE = 36
 
 LEARNING_RATE = 10**(-2)
 
-EPOCHS = 10
+EPOCHS = 3
 
 LOG_INTERVAL = 3
 
@@ -13,12 +13,12 @@ SAVE_MODEL = True
 
 gamma = 0.1
 
-RESTORE_MODEL = True
+RESTORE_MODEL = False
 
 
 PATH_to_log_dir = "./logs"
-MODEL_SAVE_PATH = "./model_save/Mydemo.pkl"
-
+CLASS_MODEL_SAVE_PATH = "./model_save/My_class_demo.pkl"
+REGTRSSION_MODEL_SAVE_PATH = "./model_save/My_regression_demo.pkl"
 ## 输入相关
 TRAIN_DATA_SIZE = 2000
 

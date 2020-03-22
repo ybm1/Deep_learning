@@ -19,7 +19,6 @@ writer = SummaryWriter(C.PATH_to_log_dir)
 
 # 进行tensorboard的查看
 
-
 def mytrain(model, device, train_loader, optimizer, epoch):
     model.train()
     for batch_idx, sample_batched in enumerate(train_loader):
@@ -34,13 +33,12 @@ def mytrain(model, device, train_loader, optimizer, epoch):
                           p3.to(device,dtype = torch.float32),target.to(device)
 
         optimizer.zero_grad()
-        output = model(p1,p2,p3)
-
+        output = model(p1, p2, p3)
         loss = F.mse_loss(output, target)
-
         loss.backward()
-
         optimizer.step()
+
+
         bias = F.l1_loss(output, target)
 
         writer.add_scalar('training MSE',
@@ -50,13 +48,14 @@ def mytrain(model, device, train_loader, optimizer, epoch):
                           bias.item(),
                           epoch * len(train_loader) + batch_idx)
 
-
         if batch_idx % C.LOG_INTERVAL == 0:
-            print('Train Epoch: {} Batch_idx :{} \tMSE Loss: {:.6f}'.format(
-                epoch, batch_idx , loss.item()))
-            print('Train Epoch: {} Batch_idx :{} \tBias Loss: {:.6f}'.format(
+            print('Train Epoch: {} Batch_idx :{} \tMSE Loss: {:.8f}'.format(
+                epoch, batch_idx, loss.item()))
+            print('Train Epoch: {} Batch_idx :{} \tBias Loss: {:.8f}'.format(
                 epoch, batch_idx, bias.item()))
+
     return model
+
 
 
 def mytest(model, device, test_loader,epoch):
@@ -73,21 +72,19 @@ def mytest(model, device, test_loader,epoch):
 
             p1, p2, p3, target = p1.to(device), p2.to(device), p3.to(device), target.to(device)
 
-            output = model(p1,p2,p3)
+            output = model(p1, p2, p3)
             # sum up batch loss
-            test_loss += F.mse_loss(input = output, target = target, reduction='sum').item()
+            test_loss += F.mse_loss(input=output, target=target, reduction='sum').item()
             test_bias += F.l1_loss(input=output, target=target, reduction='sum').item()
 
-
-    test_loss /= len(test_loader.dataset)
-    test_bias /= len(test_loader.dataset)
-    writer.add_scalar('Epoch test MSE',
-                      test_loss,epoch)
-    writer.add_scalar('Epoch test Bias',
-                      test_bias,epoch)
-    print('\nTest set:Epoch: {}  Average MSE loss: {:.4f}'.format(epoch,test_loss))
-    print('\nTest set:Epoch: {}  Average Bias loss: {:.4f}'.format(epoch, test_bias))
-
+        test_loss /= len(test_loader.dataset)
+        test_bias /= len(test_loader.dataset)
+        writer.add_scalar('Epoch test MSE',
+                          test_loss, epoch)
+        writer.add_scalar('Epoch test Bias',
+                          test_bias, epoch)
+        print('\nTest set:Epoch: {}  Average MSE loss: {:.8f}'.format(epoch, test_loss))
+        print('\nTest set:Epoch: {}  Average Bias loss: {:.8f}'.format(epoch, test_bias))
 
 
 
@@ -112,7 +109,7 @@ if __name__ == '__main__':
     for epoch in range(1, C.EPOCHS + 1):
         if C.RESTORE_MODEL:
             print("模型开始增量训练==>>")
-            model = torch.load(C.MODEL_SAVE_PATH)
+            model = torch.load(C.REGTRSSION_MODEL_SAVE_PATH)
             model = mytrain(model,device ,train_loader, optimizer, epoch)
             mytest(model, device, test_loader,epoch)
             scheduler.step()
@@ -124,7 +121,7 @@ if __name__ == '__main__':
 
 
     if C.SAVE_MODEL:
-        torch.save(model, C.MODEL_SAVE_PATH)
+        torch.save(model, C.REGTRSSION_MODEL_SAVE_PATH)
 
 
 ## 参考了：https://github.com/pytorch/examples/blob/master/mnist/main.py

@@ -14,6 +14,13 @@ from torch.utils.data import Dataset, DataLoader
 # 即二维的Tensor，第三部分模拟一般的DataFrame格式，即是一维Tensor
 
 
+def transform_label(label):
+    if 0 < label <0.5:
+        label = torch.tensor(0.0,dtype=torch.long)
+    else:
+        label = torch.tensor(1.0,dtype=torch.long)
+    return label
+
 def get_data(sample_size):
     data = []
     for i in range(sample_size):
@@ -44,6 +51,12 @@ def get_data(sample_size):
         # 生成该条样本的label
         label = np.random.random(1)
         label = torch.tensor(label, dtype=torch.float32)
+
+        ## 如果是分类，要对label进行转换，以2分类为例
+        ## 后面使用CrossEntropyLoss 就不用转one-hot了，自动转
+        label = transform_label(label)
+
+
         # 分别储存features和label
         h["features"] = features
         h["label"] = label
@@ -100,8 +113,8 @@ if __name__ == '__main__':
         print(i_batch, sample_batched['features']["p1"].size(),
               sample_batched['features']["p2"].size(),
               sample_batched['features']["p3"].size(),
-              len(train_loader.dataset)
-             # sample_batched['label']
+              len(train_loader.dataset),
+              sample_batched['label']
              )
         if i ==1:
             break

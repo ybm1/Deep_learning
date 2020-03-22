@@ -31,8 +31,12 @@ class Net(nn.Module):
         self.fc_p2 = torch.nn.Linear(in_features=C.HIDDEN_SIZE, out_features=C.OUT_FEATURES)
 
         self.fc_p3 = torch.nn.Linear(in_features= 10, out_features=C.OUT_FEATURES)
+        # 如果是分类 应该把out_features改成类别个数，以2分类为例
 
-        self.fc_all = torch.nn.Linear(in_features=3*C.OUT_FEATURES, out_features=1)
+        self.fc_all = torch.nn.Linear(in_features=3 * C.OUT_FEATURES,out_features= 2 )
+
+        #self.fc_all = torch.nn.Linear(in_features=3*C.OUT_FEATURES, out_features=1)
+
 
     def forward(self, p1,p2,p3):
         p1 = self.conv1(p1)
@@ -55,11 +59,13 @@ class Net(nn.Module):
         p3 = self.fc_p3(p3)
         p3 = F.sigmoid(p3)
 
-        ##print("model===>",p1.size(),p2.size(),p3.size())
+        #print("model===>",p1.size(),p2.size(),p3.size())
 
         p_all = torch.cat((p1,p2,p3),1)
+
         output = self.fc_all(p_all)
         output = F.sigmoid(output)
+        #print("output size===>", output.size())
 
         return output
 

@@ -67,7 +67,12 @@ print(p1.size())
 p1 = fc_p1(p1)
 print(p1.size())
 
+fc_all = torch.nn.Linear(in_features=3 * C.OUT_FEATURES,out_features= 3 )
 
+t = torch.randn(36, 30)
+print("t fc_all====>",t.size())
+t_all = fc_all(t)
+print("fc_all====>",t_all.size())
 
 class RNN(torch.nn.Module):
     def __init__(self):
@@ -104,6 +109,23 @@ net=RNN()
 x = torch.randn(36, 8,10)
 print("lstm===>",net(x).size())
 
+
+loss = nn.CrossEntropyLoss()
+# input, NxC=2x3
+
+input = torch.randn(36, 3, requires_grad=True)
+
+# target, N
+
+target = torch.empty(36, dtype=torch.long).random_(3)
+output = loss(input, target)
+
+
+
+print(input.size())
+print(target.size())
+print("要计算loss的结果：")
+print(output)
 
 
 
