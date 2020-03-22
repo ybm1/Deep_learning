@@ -52,14 +52,17 @@ def mytrain(model, device, train_loader, optimizer, epoch):
 
 
         if batch_idx % C.LOG_INTERVAL == 0:
-            print('Train Epoch: {} Batch_idx :{} \tLoss: {:.6f}'.format(
+            print('Train Epoch: {} Batch_idx :{} \tMSE Loss: {:.6f}'.format(
                 epoch, batch_idx , loss.item()))
+            print('Train Epoch: {} Batch_idx :{} \tBias Loss: {:.6f}'.format(
+                epoch, batch_idx, bias.item()))
+    return model
 
 
 def mytest(model, device, test_loader,epoch):
     model.eval()
     test_loss = 0
-    correct = 0
+    test_bias = 0
     with torch.no_grad():
         for data in test_loader:
             p1 = data["features"]["p1"]
@@ -71,15 +74,19 @@ def mytest(model, device, test_loader,epoch):
             p1, p2, p3, target = p1.to(device), p2.to(device), p3.to(device), target.to(device)
 
             output = model(p1,p2,p3)
-            test_loss += F.mse_loss(input = output, target = target, reduction='sum').item()  # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-            correct += pred.eq(target.view_as(pred)).sum().item()
+            # sum up batch loss
+            test_loss += F.mse_loss(input = output, target = target, reduction='sum').item()
+            test_bias += F.l1_loss(input=output, target=target, reduction='sum').item()
+
 
     test_loss /= len(test_loader.dataset)
+    test_bias /= len(test_loader.dataset)
     writer.add_scalar('Epoch test MSE',
                       test_loss,epoch)
-
+    writer.add_scalar('Epoch test Bias',
+                      test_bias,epoch)
     print('\nTest set:Epoch: {}  Average MSE loss: {:.4f}'.format(epoch,test_loss))
+    print('\nTest set:Epoch: {}  Average Bias loss: {:.4f}'.format(epoch, test_bias))
 
 
 
@@ -106,12 +113,12 @@ if __name__ == '__main__':
         if C.RESTORE_MODEL:
             print("模型开始增量训练==>>")
             model = torch.load(C.MODEL_SAVE_PATH)
-            mytrain(model, device, train_loader, optimizer, epoch)
+            model = mytrain(model,device ,train_loader, optimizer, epoch)
             mytest(model, device, test_loader,epoch)
             scheduler.step()
 
         else:
-            mytrain(model, device, train_loader, optimizer, epoch)
+            model = mytrain(model,device, train_loader, optimizer, epoch)
             mytest(model, device, test_loader, epoch)
             scheduler.step()
 

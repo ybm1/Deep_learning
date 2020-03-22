@@ -3,7 +3,7 @@
 ## 训练相关常数
 BATCH_SIZE = 36
 
-LEARNING_RATE = 10**(-3)
+LEARNING_RATE = 10**(-2)
 
 EPOCHS = 10
 
@@ -20,9 +20,9 @@ PATH_to_log_dir = "./logs"
 MODEL_SAVE_PATH = "./model_save/Mydemo.pkl"
 
 ## 输入相关
-TRAIN_DATA_SIZE = 1000
+TRAIN_DATA_SIZE = 2000
 
-TEST_DATA_SIZE = 300
+TEST_DATA_SIZE = 500
 
 SAMPLE_SIZE = TRAIN_DATA_SIZE + TEST_DATA_SIZE
 

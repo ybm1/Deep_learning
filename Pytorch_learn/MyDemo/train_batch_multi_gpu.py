@@ -51,6 +51,7 @@ def mytrain(model,device, train_loader, optimizer, epoch):
         if batch_idx % C.LOG_INTERVAL == 0:
             print('Train Epoch: {} Batch_idx :{} \tLoss: {:.6f}'.format(
                 epoch, batch_idx , loss.item()))
+    return model
 
 
 def mytest(model,device, test_loader,epoch):
@@ -126,13 +127,13 @@ if __name__ == '__main__':
             print("模型开始增量训练==>>")
             model = torch.load(C.MODEL_SAVE_PATH)
             mytrain(model, device, train_loader, optimizer, epoch)
-            print(model.parameters())
+            model = mytrain(model, train_loader, optimizer, epoch)
             mytest(model, device,test_loader,epoch)
             scheduler.step()
 
         else:
             mytrain(model,  train_loader, optimizer, epoch)
-            print(model.parameters())
+            model = mytrain(model, train_loader, optimizer, epoch)
             mytest(model, test_loader, epoch)
             scheduler.step()
 
