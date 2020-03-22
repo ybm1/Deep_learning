@@ -10,7 +10,8 @@ import Const as C
 
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter(C.PATH_to_log_dir)
-
+import warnings
+warnings.filterwarnings("ignore")
 
 from sklearn.metrics import *
 

@@ -54,7 +54,7 @@ def get_data(sample_size):
 
         ## 如果是分类，要对label进行转换，以2分类为例
         ## 后面使用CrossEntropyLoss 就不用转one-hot了，自动转
-        label = transform_label(label)
+        #label = transform_label(label)
 
 
         # 分别储存features和label
