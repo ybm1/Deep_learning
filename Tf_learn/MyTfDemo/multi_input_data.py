@@ -8,6 +8,7 @@ import Const as C
 # https://blog.csdn.net/wiinter_fdd/article/details/72835939
 # https://blog.csdn.net/GodWriter/article/details/90200179
 
+sess = tf.Session()
 
 def generate_tfrecoder(sample_size):
     """
@@ -53,10 +54,10 @@ def generate_tfrecoder(sample_size):
         # 序列化该样本
         tf_serialized = tf_example.SerializeToString()
 
-        # 写入一个序列化的样本
+
         if (i+1) % 50 ==0:
             print("第 {} 个 tf recoder正在写入...".format(i+1))
-
+        # 写入一个序列化的样本
         writer.write(tf_serialized)
         # 由于上面有循环几次，我们就已经写了几个样本
         # 关闭文件
@@ -71,9 +72,14 @@ def parse_function(example_proto):
     # 定义解析的字典
     dics = {
         'label': tf.io.FixedLenFeature([], tf.float32),
+        'label_shape': tf.io.FixedLenFeature([], tf.int64),
         'p1': tf.io.FixedLenFeature([], tf.string),
+        'p1_shape': tf.io.FixedLenFeature([], tf.int64),
         'p2': tf.io.FixedLenFeature([], tf.float32),
-        'p3': tf.io.FixedLenFeature([], tf.float32)}
+        'p2_shape': tf.io.FixedLenFeature([], tf.int64),
+        'p3': tf.io.FixedLenFeature([], tf.float32),
+        'p3_shape': tf.io.FixedLenFeature([], tf.int64)
+    }
     parsed_example = tf.io.parse_single_example(serialized=example_proto, features=dics)
 
     label = parsed_example["label"]
@@ -91,6 +97,25 @@ def parse_function(example_proto):
     return p1,p2,p3,label
 
 
+def get_data(filename):
+    dataset = tf.data.TFRecordDataset(filenames=[filename])
+    dataset = dataset.map(parse_function)
+    dataset = dataset.shuffle()
+    dataset = dataset.batch(C.BATCH_SIZE).repeat(1)
+
+    iterator = dataset.make_initializable_iterator()
+    next_element = iterator.get_next()
+
+
+    sess.run(iterator.initializer)
+    # Compute for 100 epochs.
+
+    for _ in range(100):
+        while True:
+            try:
+                print(sess.run(next_element))
+            except tf.errors.OutOfRangeError:
+                break
 
 
 
@@ -99,47 +124,16 @@ def parse_function(example_proto):
 
 
 
+if __name__ == '__main__':
+    #generate_tfrecoder(2000)
+
+
+    get_data(C.RECODER_PATH)
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-generate_tfrecoder(2000)
 
 
 
