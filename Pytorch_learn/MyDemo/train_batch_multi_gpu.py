@@ -50,7 +50,7 @@ def mytrain(model, train_loader, optimizer, epoch):
 
 
         if batch_idx % C.LOG_INTERVAL == 0:
-            print('Train Epoch: {} Batch_idx :{} \tLoss: {:.6f}'.format(
+            print('Train Epoch: {} Batch_idx :{} \tLoss: {:.8f}'.format(
                 epoch, batch_idx , loss.item()))
 
 
@@ -79,7 +79,7 @@ def mytest(model, test_loader,epoch):
     writer.add_scalar('Epoch test MSE',
                       test_loss,epoch)
 
-    print('\nTest set:Epoch: {}  Average MSE loss: {:.4f}'.format(epoch,test_loss))
+    print('\nTest set:Epoch: {}  Average MSE loss: {:.8f}'.format(epoch,test_loss))
 
 
 
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     print("device counts===>", torch.cuda.device_count())
     model = Net()
     #if torch.cuda.device_count() > 1:
-    device_ids = [0, 1, 2, 3]
+    device_ids = ["0"] # 在cloab上测试，device_ids需要是字符列表形式
     model = torch.nn.DataParallel(model,device_ids = device_ids).cuda()
 
     # 经过在colab上的测试，只需要上面这一行就可以，通过device_ids的不同，来指定是单个GPU
