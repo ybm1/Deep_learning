@@ -15,7 +15,7 @@ writer = SummaryWriter(C.PATH_to_log_dir)
 ## 本代码可以对cpu或者单个gpu进行使用
 
 ## 使用
-# tensorboard --logdir=/Users/biqixuan/PycharmProjects/Deep_learning/Pytorch_learn/MyDemo/logs
+# tensorboard --logdir=/Users/biqixuan/PycharmProjects/Deep_learning/Pytorch_learn/MyPytorchDemo/logs
 
 # 进行tensorboard的查看
 

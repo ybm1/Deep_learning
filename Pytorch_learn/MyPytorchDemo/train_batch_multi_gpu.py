@@ -12,7 +12,7 @@ from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter(C.PATH_to_log_dir)
 
 ## 使用
-# tensorboard --logdir=/Users/biqixuan/PycharmProjects/Deep_learning/Pytorch_learn/MyDemo/logs
+# tensorboard --logdir=/Users/biqixuan/PycharmProjects/Deep_learning/Pytorch_learn/MyPytorchDemo/logs
 
 # 进行tensorboard的查看
 
