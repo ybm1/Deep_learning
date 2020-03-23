@@ -106,7 +106,7 @@ if __name__ == '__main__':
     print("device counts===>", torch.cuda.device_count())
     model = Net()
     #if torch.cuda.device_count() > 1:
-    device_ids = ["0"] # 在cloab上测试，device_ids需要是字符列表形式
+    device_ids = [0] # 注意这里的形式 如果是多个GPU就是 device_ids = [0,1,2,3]
     model = torch.nn.DataParallel(model,device_ids = device_ids).cuda()
 
     # 经过在colab上的测试，只需要上面这一行就可以，通过device_ids的不同，来指定是单个GPU
