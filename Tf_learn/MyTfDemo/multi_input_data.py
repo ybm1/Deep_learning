@@ -24,7 +24,7 @@ def generate_tfrecoder(sample_size):
     for i in range(sample_size):
         features = {}
 
-        p1 = np.random.rand(3, 20, 40)
+        p1 = np.random.rand(20, 40,3)
         # 写入张量，类型float，本身是三维张量 一种方法是将矩阵flatten成list
         # 另一种方法是转变成字符类型存储，随后再转回原类型 这里用第一种第二种转字符的不太好操作
         #features['p1'] = tf.train.Feature(bytes_list=tf.train.BytesList(value=[p1.tostring()]))
@@ -96,7 +96,7 @@ def parse_function(example_proto):
     """
 
     p1 = tf.sparse_tensor_to_dense(parsed_example['p1'])
-    p1 = tf.reshape(p1,(3, 20, 40))
+    p1 = tf.reshape(p1,(20, 40,3))
     p2 = tf.sparse_tensor_to_dense(parsed_example['p2'])
     p2 = tf.reshape(p2,(8, 10))
     p3 = parsed_example["p3"]
@@ -128,7 +128,7 @@ def get_data(filename):
 
 
 if __name__ == '__main__':
-    #generate_tfrecoder(2000)
+    generate_tfrecoder(2000)
 
 
     next_element = get_data(C.RECODER_PATH)
