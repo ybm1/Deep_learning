@@ -108,10 +108,10 @@ def parse_function(example_proto):
 
 def get_data(filename):
     dataset = tf.data.TFRecordDataset(filenames=[filename])
-    print("读取tfrecoder 成功...")
+    #print("读取tfrecoder 成功...")
     dataset = dataset.map(parse_function)
     dataset = dataset.shuffle(buffer_size=C.TRAIN_DATA_SIZE)
-    dataset = dataset.batch(C.BATCH_SIZE).repeat(1)
+    dataset = dataset.batch(C.BATCH_SIZE)
     # 用迭代器进行batch的读取
     iterator = dataset.make_one_shot_iterator()
     next_element = iterator.get_next()

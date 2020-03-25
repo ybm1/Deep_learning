@@ -5,7 +5,7 @@ BATCH_SIZE = 36
 
 LEARNING_RATE = 10**(-2)
 
-EPOCHS = 20
+EPOCHS = 2
 
 LOG_INTERVAL = 3
 
@@ -15,6 +15,7 @@ gamma = 0.1
 
 RESTORE_MODEL = False
 
+DROPOUT_RATE = 0.3
 
 PATH_to_log_dir = "./logs"
 CLASS_MODEL_SAVE_PATH = "./model_save/My_class_demo.pkl"
