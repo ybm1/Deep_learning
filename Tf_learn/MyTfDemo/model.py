@@ -42,6 +42,7 @@ def MyNet(p1,p2,p3):
 
 
     with tf.variable_scope("p1_3d_tensor_process"):
+        # 可以用placeholder来看shape的变化
         #p1 = tf.placeholder(tf.float32, [None, 20, 40, 3])
         #p1 = tf.reshape(p1,[None,20, 40, 3])
         # 第一层卷积：5×5×1卷积核6个 [5，5，3，6]
@@ -138,9 +139,9 @@ def MyNet(p1,p2,p3):
 
 
 if __name__ == '__main__':
-    next_element = get_data(C.TRAIN_RECODER_PATH)
     # Compute for epochs.
     for _ in range(C.EPOCHS):
+        next_element = get_data(C.TRAIN_RECODER_PATH)
         while True:
             try:
                 p1, p2, p3 = next_element[0],next_element[1],next_element[2]
