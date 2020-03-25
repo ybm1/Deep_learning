@@ -43,7 +43,7 @@ def MyNet(p1,p2,p3):
 
     with tf.variable_scope("p1_3d_tensor_process"):
         #p1 = tf.placeholder(tf.float32, [None, 20, 40, 3])
-        p1 = tf.reshape(p1,[C.BATCH_SIZE,20, 40, 3])
+        #p1 = tf.reshape(p1,[None,20, 40, 3])
         # 第一层卷积：5×5×1卷积核6个 [5，5，3，6]
         W_conv1 = weight_variable([5, 5, 3, 6])
         b_conv1 = bias_variable([6])
@@ -79,7 +79,7 @@ def MyNet(p1,p2,p3):
 
     with tf.variable_scope("p2_2d_tensor_process",reuse=tf.AUTO_REUSE):
         #p2 = tf.placeholder(tf.float32,[None,8, 10])
-        p2 = tf.reshape(p2, [C.BATCH_SIZE,8, 10])
+        #p2 = tf.reshape(p2, [None,8, 10])
         # Define lstm cells with tensorflo
         # Forward direction cell
         rate2 = tf.placeholder(tf.float32)
@@ -99,11 +99,12 @@ def MyNet(p1,p2,p3):
         #print(output_fw,output_bw)
         #print(states_fw,states_bw)
         lstm_output = tf.concat([output_fw, output_bw], 2)
-        #print(lstm_output)
-        lstm_output = tf.reshape(lstm_output, [C.BATCH_SIZE, -1])
-        #print(lstm_output)
+        #print(lstm_output.shape)
+        #lstm_output = tf.reshape(lstm_output, [None, 8*40])
+        lstm_output = tf.layers.flatten(lstm_output)
+        #print(lstm_output.shape)
         # 输出层
-        W_fc_lstm = weight_variable([lstm_output.shape[1], 10])
+        W_fc_lstm = weight_variable([8*40, 10])
         b_fc_lstm = bias_variable([10],relu=False)
 
         p2_output = tf.nn.sigmoid(tf.matmul(lstm_output, W_fc_lstm) + b_fc_lstm)
@@ -111,7 +112,7 @@ def MyNet(p1,p2,p3):
 
     with tf.variable_scope("p3_1d_tensor_process"):
         #p3 = tf.placeholder(tf.float32,[None,10])
-        p3 = tf.reshape(p3, [C.BATCH_SIZE,10])
+        #p3 = tf.reshape(p3, [None,10])
         W_fc_p3 = weight_variable([10, 10])
         b_fc_p3 = bias_variable([10], relu=False)
         output = tf.nn.sigmoid(tf.matmul(p3, W_fc_p3) + b_fc_p3)
@@ -137,12 +138,13 @@ def MyNet(p1,p2,p3):
 
 
 if __name__ == '__main__':
-    next_element = get_data(C.RECODER_PATH)
+    next_element = get_data(C.TRAIN_RECODER_PATH)
     # Compute for epochs.
     for _ in range(C.EPOCHS):
         while True:
             try:
                 p1, p2, p3 = next_element[0],next_element[1],next_element[2]
+                print(p1,p2,p3)
                 MyNet(p1,p2,p3)
             except tf.errors.OutOfRangeError:
                 break

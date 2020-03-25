@@ -10,7 +10,7 @@ import Const as C
 
 sess = tf.Session()
 
-def generate_tfrecoder(sample_size):
+def generate_tfrecoder(sample_size,path):
     """
     用于产生tfrecoder的模拟数据，这里对每个样本模拟了3部分特征：
     p1: 3维的Tensor特征(模拟图片)
@@ -18,9 +18,9 @@ def generate_tfrecoder(sample_size):
     p1: 最一般的向量型(ML)特征
     label是样本的标签，分类和回归时有所不同
     :param sample_size: 样本量
-    :return: 无返回值，全部数据写入在 C.RECODER_PATH 下
+    :return: 无返回值，全部数据写入在 path 下
     """
-    writer = tf.io.TFRecordWriter(C.RECODER_PATH )
+    writer = tf.io.TFRecordWriter(path )
     for i in range(sample_size):
         features = {}
 
@@ -110,7 +110,7 @@ def get_data(filename):
     dataset = tf.data.TFRecordDataset(filenames=[filename])
     #print("读取tfrecoder 成功...")
     dataset = dataset.map(parse_function)
-    dataset = dataset.shuffle(buffer_size=C.TRAIN_DATA_SIZE)
+    #dataset = dataset.shuffle(buffer_size=C.TRAIN_DATA_SIZE)
     dataset = dataset.batch(C.BATCH_SIZE)
     # 用迭代器进行batch的读取
     iterator = dataset.make_one_shot_iterator()
@@ -128,19 +128,20 @@ def get_data(filename):
 
 
 if __name__ == '__main__':
-    generate_tfrecoder(2000)
+    #generate_tfrecoder(C.TRAIN_DATA_SIZE,C.TRAIN_RECODER_PATH)
+    #generate_tfrecoder(C.TEST_DATA_SIZE, C.TEST_RECODER_PATH)
 
-
-    next_element = get_data(C.RECODER_PATH)
 
     # Compute for epochs.
-    for _ in range(C.EPOCHS):
+    for i in range(C.EPOCHS):
+        train_next_element = get_data(C.TRAIN_RECODER_PATH)
+        print("epoch {}".format(i+1))
         while True:
             try:
-                p1, p2, p3, label = sess.run([next_element[0],
-                                              next_element[1],
-                                              next_element[2],
-                                              next_element[3]])
+                p1, p2, p3, label = sess.run([train_next_element[0],
+                                              train_next_element[1],
+                                              train_next_element[2],
+                                              train_next_element[3]])
                 print(p1.shape)
                 print(p2.shape)
                 print(p3.shape)
