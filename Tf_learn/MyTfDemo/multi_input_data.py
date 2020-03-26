@@ -124,6 +124,20 @@ def get_data(filename):
 
 
 
+def get_data_gpu(filename,batch_size):
+    dataset = tf.data.TFRecordDataset(filenames=[filename])
+    #print("读取tfrecoder 成功...")
+    dataset = dataset.map(parse_function)
+    #dataset = dataset.shuffle(buffer_size=C.TRAIN_DATA_SIZE)
+    dataset = dataset.batch(batch_size)
+    # 用迭代器进行batch的读取
+    iterator = dataset.make_one_shot_iterator()
+    next_element = iterator.get_next()
+
+    # 返回next_element后，反复的run它，就可以得到不同的batch
+    # 这就是输入数据和训练模型时的连接点
+    return next_element
+
 
 
 
