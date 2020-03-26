@@ -153,13 +153,13 @@ def train_on_gpu():
                     train_mse_loss = get_loss(train_next_element, p1, p2, p3, label,
                                               mse, train_opti, all_train_steps, train_writer,
                                               mse_train_summary, mse_train_hist)
-
-                    # print("Train Epoch {} Batch {} All steps {}: "
-                    #      "MSE ==> {}".format(i + 1, train_bacth_per_epoch,
-                    #                          all_train_steps, train_mse_loss))
+                    if all_train_steps % 500 == 0:
+                        print("Train Epoch {} Batch {} All steps {}: "
+                              "MSE ==> {}".format(i + 1, train_bacth_per_epoch,
+                                                  all_train_steps, train_mse_loss))
 
                     if all_train_steps % C.SAVE_FREQUENCY == 0:
-                        print("model is saved at all train step {}".format(all_train_steps))
+                        # print("model is saved at all train step {}".format(all_train_steps))
                         saver.save(sess, C.REGTRSSION_MODEL_SAVE_PATH, global_step=C.MAX_STEP)
 
                 except tf.errors.OutOfRangeError:
