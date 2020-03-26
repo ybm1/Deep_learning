@@ -104,7 +104,7 @@ def train_on_cpu():
                 test_loss += test_mse_loss
                 test_batchs += 1
                 print("Test batch {} : MSE ==> {}".format(test_batchs, test_mse_loss))
-                tf.summary.histogram('test_mse_loss_steps', test_mse_loss)
+                #tf.summary.histogram('test_mse_loss_steps', test_mse_loss)
 
             except tf.errors.OutOfRangeError:
                 break
