@@ -1,5 +1,5 @@
 import tensorflow as tf
-import Const as C
+import Const_tf as C
 from multi_input_data import get_data
 
 # 定义权重来生成全连接层

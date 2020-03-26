@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-import Const as C
+import Const_tf as C
 
 # 参考了： https://blog.csdn.net/u014061630/article/details/80728694
 # https://www.cnblogs.com/puheng/p/9576521.html

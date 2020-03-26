@@ -1,6 +1,6 @@
 import tensorflow as tf
 from multi_input_data import get_data
-import Const as C
+import Const_tf as C
 import model as m
 # 设置GPU按需增长
 config = tf.ConfigProto()
@@ -58,12 +58,17 @@ def train_on_cpu():
     #mse = tf.nn.l2_loss(label,y_pred)
     train_opti = tf.train.AdamOptimizer(1e-4).minimize(mse)
 
-    saver = tf.train.Saver(max_to_keep=C.MAX_STEP)
+    saver = tf.train.Saver(max_to_keep = 10)
 
     sess.run(tf.global_variables_initializer())
     # Compute for epochs.
     all_train_steps = 0
     all_test_steps = 0
+    if C.RESTORE_MODEL:
+        saver.restore(sess, tf.train.latest_checkpoint(C.LOAD_MODEL_PATH))
+        # search for checkpoint file
+        print("模型开始增量训练====>")
+        graph = tf.get_default_graph()
     for i in range(C.EPOCHS):
         train_next_element = get_data(C.TRAIN_RECODER_PATH)
         test_next_element = get_data(C.TEST_RECODER_PATH)
@@ -81,8 +86,10 @@ def train_on_cpu():
                       "MSE ==> {}".format(i + 1, train_bacth_per_epoch,
                                           all_train_steps, train_mse_loss))
 
-                if all_train_steps % 200 ==0:
-                    saver.save(sess, C.REGTRSSION_MODEL_SAVE_PATH)
+                if all_train_steps % C.SAVE_FREQUENCY ==0:
+                    print("model is saved at all train step {}".format(all_train_steps))
+                    saver.save(sess, C.REGTRSSION_MODEL_SAVE_PATH,global_step=C.MAX_STEP)
+
             except tf.errors.OutOfRangeError:
                 break
 
