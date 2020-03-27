@@ -109,7 +109,9 @@ def train_on_gpu():
 
         with tf.variable_scope(tf.get_variable_scope()):
             for i in range(num_gpus):
-                with tf.device(assign_to_device('/gpu:{}'.format(i), ps_device='/cpu:0')):
+                #with tf.device(assign_to_device('/gpu:{}'.format(i), ps_device='/cpu:0')):
+                with tf.device('/gpu:{}'.format(i)):
+                    print("assign_to_device====>>>>", assign_to_device('/gpu:{}'.format(i), ps_device='/cpu:0'))
                     _x1 = p1[i * C.BATCH_SIZE:(i + 1) * C.BATCH_SIZE]
 
                     _x2 = p2[i * C.BATCH_SIZE:(i + 1) * C.BATCH_SIZE]
@@ -132,11 +134,11 @@ def train_on_gpu():
         # Compute for epochs.
         all_train_steps = 0
         all_test_steps = 0
-        # if C.RESTORE_MODEL:
-        #    saver.restore(sess, tf.train.latest_checkpoint(C.LOAD_MODEL_PATH))
-        # search for checkpoint file
-        #    print("模型开始增量训练====>")
-        #    graph = tf.get_default_graph()
+        if C.RESTORE_MODEL:
+           saver.restore(sess, tf.train.latest_checkpoint(C.LOAD_MODEL_PATH))
+           #search for checkpoint file
+           print("模型开始增量训练====>")
+           graph = tf.get_default_graph()
         for i in range(C.EPOCHS):
             train_next_element = get_data_gpu(C.TRAIN_RECODER_PATH, num_gpus * C.BATCH_SIZE)
             test_next_element = get_data(C.TEST_RECODER_PATH)
