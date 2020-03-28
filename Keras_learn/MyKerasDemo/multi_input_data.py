@@ -105,12 +105,13 @@ def parse_function(example_proto):
     return p1, p2, p3, label
 
 
-def get_data(filename):
+def get_data(filename,repeats):
     dataset = tf.data.TFRecordDataset(filenames=[filename])
     # print("读取tfrecoder 成功...")
     dataset = dataset.map(parse_function)
     # dataset = dataset.shuffle(buffer_size=C.TRAIN_DATA_SIZE)
     dataset = dataset.batch(C.BATCH_SIZE)
+    dataset = dataset.repeat(repeats)
     # 用迭代器进行batch的读取
     iterator = dataset.make_one_shot_iterator()
     next_element = iterator.get_next()
@@ -136,12 +137,12 @@ def get_data_gpu(filename, batch_size):
 
 
 if __name__ == '__main__':
-    generate_tfrecoder(C.TRAIN_DATA_SIZE,C.TRAIN_RECODER_PATH)
-    generate_tfrecoder(C.TEST_DATA_SIZE, C.TEST_RECODER_PATH)
+    #generate_tfrecoder(C.TRAIN_DATA_SIZE,C.TRAIN_RECODER_PATH)
+    #generate_tfrecoder(C.TEST_DATA_SIZE, C.TEST_RECODER_PATH)
 
     # Compute for epochs.
     for i in range(C.EPOCHS):
-        train_next_element = get_data(C.TRAIN_RECODER_PATH)
+        train_next_element = get_data(C.TEST_RECODER_PATH,C.EPOCHS)
         print("epoch {}".format(i + 1))
         while True:
             try:

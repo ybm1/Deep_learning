@@ -24,8 +24,8 @@ TEST_PATH_to_log_dir = "./logs/test"
 SAVE_FREQUENCY = 10
 
 
-CLASS_MODEL_SAVE_PATH = "./model_save/My_class_model.ckpt"
-REGTRSSION_MODEL_SAVE_PATH = "./model_save/My_reg_model.ckpt"
+CLASS_MODEL_SAVE_PATH = "./model_save/My_keras_model.h5"
+REGTRSSION_MODEL_SAVE_PATH = "./model_save/My_keras_model.h5"
 LOAD_MODEL_PATH = "./model_save/"
 
 ## 输入相关

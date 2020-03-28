@@ -2,13 +2,13 @@
 import tensorflow as tf
 import Const_k as C
 
-def Kears_model():
+def keras_model():
 
-    p1_input = tf.keras.Input(shape = (20, 40, 3),batch_size = C.BATCH_SIZE,name = "3d_tensor")
+    p1_input = tf.keras.Input(shape = (20, 40, 3),name = "3d_tensor")
 
-    p2_input = tf.keras.Input(shape=(8, 10), batch_size=C.BATCH_SIZE, name="2d_tensor")
+    p2_input = tf.keras.Input(shape=(8, 10), name="2d_tensor")
 
-    p3_input = tf.keras.Input(shape=(10,), batch_size=C.BATCH_SIZE, name="1d_tensor")
+    p3_input = tf.keras.Input(shape=(10,), name="1d_tensor")
 
 
     p1 = tf.keras.layers.Conv2D(activation='relu',filters =12,kernel_size=5,strides =1,padding='same')(p1_input)
@@ -50,12 +50,13 @@ def compile_model(model):
                   loss=tf.keras.losses.MeanSquaredError(),
                   metrics=[tf.keras.metrics.MeanSquaredError(),
                            tf.keras.metrics.MeanAbsoluteError() ])
+    print("compile 成功...")
 
 
 
 
 if __name__ == '__main__':
-    model = Kears_model()
+    model = keras_model()
     compile_model(model)
 
 
