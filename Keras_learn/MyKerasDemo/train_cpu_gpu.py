@@ -34,6 +34,12 @@ def train_keras():
     test_X = [test_next_element[0],test_next_element[1],
          test_next_element[2]]
     test_y = test_next_element[3]
+    """
+    注意，tf.keras可以直接接受由tf.data的迭代器，但是此时要指定steps_per_epoch参数
+    该参数为每个epoch训练的步数，即训练数据量/batch_size，每个batch是一个step
+    可以配合tf.data中的repeat方法进行使用，多个epoch就是对数据进行多轮使用
+    
+    """
     if C.RESTORE_MODEL:
         print("开始增量训练===>>>")
         # Recreate the exact same model purely from the file:
